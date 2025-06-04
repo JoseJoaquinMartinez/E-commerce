@@ -21,27 +21,56 @@ export default function () {
             <Link href={"/"} className="underline mb-5">
               Continua comprando
             </Link>
-          </div>
 
-          {/* Items */}
-          {productsInCart.map((product) => (
-            <div key={product.slug} className="flex">
-              <Image
-                src={`/products/${product.images[0]}`}
-                alt={product.title}
-                width={100}
-                height={100}
-                className="mr-5 rounded"
-              />
-              <div>
-                <p>{product.title}</p>
-                <p>{product.price}€</p>
-                <QuantitySelector quantity={1} />
+            {/* Items */}
+            {productsInCart.map((product) => (
+              <div key={product.slug} className="flex mb-5">
+                <Image
+                  src={`/products/${product.images[0]}`}
+                  alt={product.title}
+                  width={100}
+                  height={100}
+                  className="mr-5 rounded"
+                  style={{
+                    width: "100px",
+                    height: "100px",
+                  }}
+                />
+                <div>
+                  <p>{product.title}</p>
+                  <p>{product.price}€</p>
+                  <QuantitySelector quantity={1} />
+                </div>
+                <button className="underline mt-3">Eliminar</button>
               </div>
-              <button className="underline mt-3">Eliminar</button>
+            ))}
+          </div>
+          {/* Checkout - Resumen de compra*/}
+          <div className="bg-white rounded-xl shadow-xl p-7">
+            <h2 className="text-2xl mb-2">Resumen de compra</h2>
+            <div className="grid grid-cols-2">
+              <span>Nº productos</span>
+              <span className="text-right">3 artículos</span>
+
+              <span>SubTotal</span>
+              <span className="text-right">100€</span>
+
+              <span>Impuestos (15%)</span>
+              <span className="text-right">100€</span>
+
+              <span className="mt-5 text-2xl ">Total</span>
+              <span className="text-right mt-5 text-2xl">100€</span>
             </div>
-          ))}
-          {/* Checkout */}
+
+            <div className=" mb-2 w-full mt-5">
+              <Link
+                href={"/checkout/address"}
+                className="flex btn-primary justify-center"
+              >
+                Pagar
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </div>
