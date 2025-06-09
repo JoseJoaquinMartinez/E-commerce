@@ -44,7 +44,7 @@ async function main() {
     });
 
     //Images
-    const imagesData = images.map(async (image) => ({
+    const imagesData = images.map((image) => ({
       url: image,
       productId: dbProduct.id,
     }));
