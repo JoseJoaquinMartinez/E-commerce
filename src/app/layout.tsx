@@ -4,7 +4,10 @@ import { titleFont } from "@/config/fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "E-commerce Store",
+  title: {
+    template: "%s | E-commerce Store",
+    default: "Home",
+  },
   description: "An online store for all your needs",
 };
 
