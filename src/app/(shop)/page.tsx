@@ -1,7 +1,9 @@
-export const revalidate = 60;
+export const revalidate = 60; // 60 segundos
+
+import { redirect } from "next/navigation";
+
 import { getPaginatedProductsWithImages } from "@/actions";
 import { Pagination, ProductGrid, Title } from "@/components";
-import { redirect } from "next/navigation";
 
 interface Props {
   searchParams: {
@@ -11,12 +13,14 @@ interface Props {
 
 export default async function Home({ searchParams }: Props) {
   const page = searchParams.page ? parseInt(searchParams.page) : 1;
+
   const { products, currentPage, totalPages } =
     await getPaginatedProductsWithImages({ page });
 
-  if (products.lenght === 0) {
+  if (products.length === 0) {
     redirect("/");
   }
+
   return (
     <>
       <Title
@@ -24,7 +28,9 @@ export default async function Home({ searchParams }: Props) {
         subtitle="Explore our latest products and offers"
         className="mb-2"
       />
+
       <ProductGrid products={products} />
+
       <Pagination totalPages={totalPages} />
     </>
   );
