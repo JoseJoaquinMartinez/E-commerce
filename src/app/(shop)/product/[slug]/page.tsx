@@ -1,4 +1,11 @@
-import { ProductSlideshow, QuantitySelector, SizeSelector } from "@/components";
+export const revalidate = 604800; // 7 days
+
+import {
+  ProductSlideshow,
+  QuantitySelector,
+  SizeSelector,
+  StockLabel,
+} from "@/components";
 import { titleFont } from "@/config/fonts";
 import { notFound } from "next/navigation";
 import { ProductMobileSlideshow } from "../../../../components/product/slideshow/ProductMobileSlideshow";
@@ -36,6 +43,7 @@ export default async function ProductPage({ params }: Props) {
 
       {/* Product details */}
       <div className="col-span-1 px-5">
+        <StockLabel slug={product.slug} />
         <h1 className={`${titleFont.className} antialiased font-bold- text-xl`}>
           {product.title}
         </h1>
