@@ -57,7 +57,7 @@ model Product {
   categoryId  String
 
 
-  Images      ProductImage[]
+  ProductImage     ProductImage[]
 
 // Indexes
   @@index([gender])
