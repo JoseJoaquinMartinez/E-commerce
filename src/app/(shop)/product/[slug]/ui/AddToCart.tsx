@@ -19,6 +19,8 @@ export const AddToCart = ({ product }: Props) => {
     if (!size) {
       return;
     }
+
+    //todo: add product to cart
   };
   return (
     <>
