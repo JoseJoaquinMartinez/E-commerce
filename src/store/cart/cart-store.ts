@@ -5,46 +5,57 @@ import { persist } from "zustand/middleware";
 interface State {
   cart: CartProduct[];
 
+  getTotalItems: () => number;
+
   addProductToCart: (product: CartProduct) => void;
   //updateProductInCart
   //removeProductFromCart
 }
 
 export const useCartStore = create<State>()(
-  //persist()
-  (set, get) => ({
-    cart: [],
+  persist(
+    (set, get) => ({
+      cart: [],
 
-    //Methods
+      //Methods
 
-    addProductToCart: (product: CartProduct) => {
-      const { cart } = get();
+      getTotalItems: () => {
+        const { cart } = get();
+        return cart.reduce((total, item) => total + item.quantity, 0);
+      },
 
-      //check if the product already exists in the cart with the same size
-      const productInCart = cart.some(
-        (item) => item.id === product.id && item.size === product.size
-      );
+      addProductToCart: (product: CartProduct) => {
+        const { cart } = get();
 
-      if (!productInCart) {
-        set({
-          cart: [...cart, product],
-        });
-        return;
-      }
+        //check if the product already exists in the cart with the same size
+        const productInCart = cart.some(
+          (item) => item.id === product.id && item.size === product.size
+        );
 
-      // If the product already exists, update the quantity
-      const updatedCartProducts = cart.map((item) => {
-        if (item.id === product.id && item.size === product.size) {
-          return {
-            ...item,
-            quantity: item.quantity + product.quantity,
-          };
+        if (!productInCart) {
+          set({
+            cart: [...cart, product],
+          });
+          return;
         }
-        return item;
-      });
-      set({
-        cart: updatedCartProducts,
-      });
-    },
-  })
+
+        // If the product already exists, update the quantity
+        const updatedCartProducts = cart.map((item) => {
+          if (item.id === product.id && item.size === product.size) {
+            return {
+              ...item,
+              quantity: item.quantity + product.quantity,
+            };
+          }
+          return item;
+        });
+        set({
+          cart: updatedCartProducts,
+        });
+      },
+    }),
+    {
+      name: "cart-storage",
+    }
+  )
 );
