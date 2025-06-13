@@ -9,9 +9,24 @@ interface Props {
 }
 
 export const AddToCart = ({ product }: Props) => {
+  const [posted, setPosted] = useState<boolean>(false);
   const [size, setSize] = useState<Size | undefined>();
+
+  const [quantity, setQuantity] = useState<number>(1);
+
+  const addToCart = () => {
+    setPosted(true);
+    if (!size) {
+      return;
+    }
+  };
   return (
     <>
+      {posted && !size && (
+        <span className="text-red-500 text-sm mt-2 fade-in">
+          Debe seleccionar una talla para añadir el producto al carrito*
+        </span>
+      )}
       {/* Size selector */}
       <SizeSelector
         selectedSize={size}
@@ -19,10 +34,12 @@ export const AddToCart = ({ product }: Props) => {
         onSizeChanged={setSize}
       />
       {/* Quantity selector */}
-      <QuantitySelector quantity={2} />
+      <QuantitySelector quantity={quantity} onQuantityChange={setQuantity} />
 
       {/* Buy button */}
-      <button className="btn-primary my-5">Añadir al carrito</button>
+      <button className="btn-primary my-5" onClick={addToCart}>
+        Añadir al carrito
+      </button>
     </>
   );
 };
