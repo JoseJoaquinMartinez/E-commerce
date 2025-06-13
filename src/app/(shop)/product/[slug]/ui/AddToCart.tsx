@@ -1,7 +1,8 @@
 "use client";
 
 import { QuantitySelector, SizeSelector } from "@/components";
-import { Product, Size } from "@/interfaces";
+import type { CartProduct, Product, Size } from "@/interfaces";
+import { useCartStore } from "@/store";
 import React, { useState } from "react";
 
 interface Props {
@@ -9,6 +10,7 @@ interface Props {
 }
 
 export const AddToCart = ({ product }: Props) => {
+  const addProductToCart = useCartStore((state) => state.addProductToCart);
   const [posted, setPosted] = useState<boolean>(false);
   const [size, setSize] = useState<Size | undefined>();
 
@@ -20,7 +22,21 @@ export const AddToCart = ({ product }: Props) => {
       return;
     }
 
-    //todo: add product to cart
+    //add product to cart
+    const cartProduct: CartProduct = {
+      id: product.id,
+      size: size,
+      slug: product.slug,
+      title: product.title,
+      price: product.price,
+      quantity: quantity,
+      image: product.images[0],
+    };
+    addProductToCart(cartProduct);
+    //reset state
+    setPosted(false);
+    setSize(undefined);
+    setQuantity(1);
   };
   return (
     <>
