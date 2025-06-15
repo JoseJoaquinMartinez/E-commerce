@@ -8,10 +8,23 @@ import { useEffect, useState } from "react";
 export const OrderSummary = () => {
   const router = useRouter();
 
-  const [loaded, setLoaded] = useState(false);
-  const { itemsInCart, subTotal, tax, total } = useCartStore((state) =>
-    state.getSummaryInformation()
+  // Select each value individually for better reactivity and to avoid infinite loops
+  const itemsInCart = useCartStore((state) => state.getTotalItems());
+  const subTotal = useCartStore((state) =>
+    state.cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
   );
+  const tax = useCartStore(
+    (state) =>
+      state.cart.reduce((sum, item) => sum + item.price * item.quantity, 0) *
+      0.15
+  );
+  const total = useCartStore(
+    (state) =>
+      state.cart.reduce((sum, item) => sum + item.price * item.quantity, 0) *
+      1.15
+  );
+
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     setLoaded(true);
