@@ -14,6 +14,7 @@ import {
 } from "react-icons/io5";
 
 import { useUIStore } from "@/store";
+import { on } from "events";
 
 export const Sidebar = () => {
   const isSideMenuOpen = useUIStore((state) => state.isSideMenuOpen);
@@ -62,7 +63,8 @@ export const Sidebar = () => {
         {/* Menú */}
 
         <Link
-          href="/"
+          href="/profile"
+          onClick={() => closeMenu()}
           className="flex items-center mt-10 p-2 hover:bg-gray-100 rounded transition-all"
         >
           <IoPersonOutline size={30} />
