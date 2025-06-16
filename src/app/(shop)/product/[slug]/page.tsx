@@ -1,17 +1,13 @@
 export const revalidate = 604800; // 7 days
 
-import {
-  ProductSlideshow,
-  QuantitySelector,
-  SizeSelector,
-  StockLabel,
-} from "@/components";
+import { ProductSlideshow, StockLabel } from "@/components";
 import { titleFont } from "@/config/fonts";
 import { notFound } from "next/navigation";
 import { ProductMobileSlideshow } from "../../../../components/product/slideshow/ProductMobileSlideshow";
 import { getProductBySlug } from "@/actions";
 
 import type { Metadata, ResolvingMetadata } from "next";
+import { AddToCart } from "./ui/AddToCart";
 
 interface Props {
   params: {
@@ -70,17 +66,7 @@ export default async function ProductPage({ params }: Props) {
           {product.title}
         </h1>
         <p className="text-lg mb-5">{product.price}€</p>
-
-        {/* Size selector */}
-        <SizeSelector
-          selectedSize={product.sizes[0]}
-          availableSizes={product.sizes}
-        />
-        {/* Quantity selector */}
-        <QuantitySelector quantity={2} />
-
-        {/* Buy button */}
-        <button className="btn-primary my-5">Añadir al carrito</button>
+        <AddToCart product={product} />
 
         {/* Description */}
         <h3 className="font-bold text-sm">Descripción</h3>

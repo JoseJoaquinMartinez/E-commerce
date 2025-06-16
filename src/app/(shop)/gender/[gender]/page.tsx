@@ -1,4 +1,3 @@
-"use client";
 export const revalidate = 60;
 
 import { redirect } from "next/navigation";
