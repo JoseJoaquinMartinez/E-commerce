@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { titleFont } from "@/config/fonts";
 
 import "./globals.css";
+import { Provider } from "@/components";
 
 export const metadata: Metadata = {
   title: {
@@ -18,7 +19,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${titleFont.className} antialiased`}>{children}</body>
+      <body className={`${titleFont.className} antialiased`}>
+        <Provider>{children}</Provider>
+      </body>
     </html>
   );
 }
