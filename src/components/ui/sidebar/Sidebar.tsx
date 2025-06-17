@@ -81,8 +81,9 @@ export const Sidebar = () => {
         </Link>
 
         <Link
-          href="/"
+          href="/auth/login"
           className="flex items-center mt-10 p-2 hover:bg-gray-100 rounded transition-all"
+          onClick={() => closeMenu()}
         >
           <IoLogInOutline size={30} />
           <span className="ml-3 text-xl">Ingresar</span>
@@ -92,6 +93,7 @@ export const Sidebar = () => {
           className="flex w-full items-center mt-10 p-2 hover:bg-gray-100 rounded transition-all"
           onClick={() => {
             logout();
+            closeMenu();
           }}
         >
           <IoLogOutOutline size={30} />
