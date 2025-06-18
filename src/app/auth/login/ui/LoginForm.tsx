@@ -2,19 +2,20 @@
 import { authenticate } from "@/actions";
 import clsx from "clsx";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+/* import { useRouter } from "next/navigation"; */
 import React, { useEffect } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { IoInformationOutline } from "react-icons/io5";
 
 export const LoginForm = () => {
   const [state, dispatch] = useFormState(authenticate, undefined);
-  const router = useRouter();
+  /* const router = useRouter(); */
 
   useEffect(() => {
     if (state === "success") {
       // Redirect to the home page after successful login
-      router.replace("/");
+      /* router.replace("/"); We don't use router because we need a refresh of the page to reload the options of the sidemenu and with a router we dont get the refresh*/
+      window.location.replace("/");
     } else if (state === "CredentialsSignin") {
       // Handle invalid credentials
       console.error("Invalid credentials");
