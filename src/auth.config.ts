@@ -21,6 +21,9 @@ export const authConfig = {
 
       return session;
     },
+    /* authorized({auth, request: {nextUrl}}){
+      
+    } */
   },
 
   providers: [
