@@ -1,7 +1,9 @@
 "use client";
 
 import { Country } from "@/interfaces";
+import { useAddressStore } from "@/store";
 import clsx from "clsx";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 type FormInputs = {
@@ -21,19 +23,29 @@ interface Props {
 }
 
 export const AddressForm = ({ countries }: Props) => {
+  const setAddress = useAddressStore((state) => state.setAddress);
+  const address = useAddressStore((state) => state.address);
+
   const {
     handleSubmit,
     register,
     formState: { isValid },
+    reset,
   } = useForm<FormInputs>({
     defaultValues: {
       //todo: set data from database
     },
   });
 
+  useEffect(() => {
+    if (address.firstName) {
+      reset(address);
+    }
+  }, []);
+
   const onSubmit = (data: FormInputs) => {
     // Handle form submission
-    console.log(data);
+    setAddress(data);
   };
 
   return (
