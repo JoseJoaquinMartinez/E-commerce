@@ -102,7 +102,7 @@ model Country {
 
 model UserAddress {
   id String @id @default(uuid())
-  firstNAme String
+  firstName String
   lastName String
   address String
   address2 String?
