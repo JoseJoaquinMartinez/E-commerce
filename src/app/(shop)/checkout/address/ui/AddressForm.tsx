@@ -1,7 +1,7 @@
 "use client";
 
 import { deleteUserAddress, setUserAddress } from "@/actions";
-import { Country } from "@/interfaces";
+import { Address, Country } from "@/interfaces";
 import { useAddressStore } from "@/store";
 import clsx from "clsx";
 import { useSession } from "next-auth/react";
@@ -22,9 +22,10 @@ type FormInputs = {
 
 interface Props {
   countries: Country[];
+  userStoredAddress?: Partial<Address>;
 }
 
-export const AddressForm = ({ countries }: Props) => {
+export const AddressForm = ({ countries, userStoredAddress = {} }: Props) => {
   const setAddress = useAddressStore((state) => state.setAddress);
   const address = useAddressStore((state) => state.address);
 
@@ -36,6 +37,8 @@ export const AddressForm = ({ countries }: Props) => {
   } = useForm<FormInputs>({
     defaultValues: {
       //todo: set data from database
+      ...userStoredAddress,
+      rememberAddress: false,
     },
   });
 
