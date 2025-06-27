@@ -2,12 +2,15 @@
 
 import { useAddressStore, useCartStore } from "@/store";
 import { currencyFormat } from "@/utils";
+import clsx from "clsx";
 import { useEffect, useState } from "react";
 
 export const PlaceOrder = () => {
   const [loaded, setLoaded] = useState<boolean>(false);
+  const [isPlacingOrder, setIsPlacingOrder] = useState<boolean>(false);
 
   const address = useAddressStore((state) => state.address);
+  const cart = useCartStore((state) => state.cart);
 
   const itemsInCart = useCartStore((state) => state.getTotalItems());
   const subTotal = useCartStore((state) =>
@@ -23,6 +26,23 @@ export const PlaceOrder = () => {
       state.cart.reduce((sum, item) => sum + item.price * item.quantity, 0) *
       1.15
   );
+
+  const onPlaceOrder = async () => {
+    setIsPlacingOrder(true);
+    console.log(address);
+    const productsToOrder = cart.map((product) => ({
+      productId: product.id,
+      quantity: product.quantity,
+      size: product.size,
+    }));
+    console.log(productsToOrder);
+
+    // Simulate placing order
+    /*  await new Promise((resolve) => setTimeout(resolve, 2000)); */
+    setIsPlacingOrder(false);
+    // Redirect to order confirmation page or handle post-order logic
+    // router.push("/orders/123");
+  };
 
   useEffect(() => {
     setLoaded(true);
@@ -85,9 +105,14 @@ export const PlaceOrder = () => {
             .
           </span>
         </p>
+        {/* <p className="text-red-500">Error procesando el pedido</p> */}
         <button
           /* href={"/orders/123"} */
-          className="flex btn-primary justify-center"
+          onClick={onPlaceOrder}
+          className={clsx({
+            "btn-primary": !isPlacingOrder,
+            "btn-disabled": isPlacingOrder,
+          })}
         >
           Pagar
         </button>
