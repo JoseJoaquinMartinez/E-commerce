@@ -1,5 +1,6 @@
 "use client";
 
+import { placeOrder } from "@/actions";
 import { useAddressStore, useCartStore } from "@/store";
 import { currencyFormat } from "@/utils";
 import clsx from "clsx";
@@ -35,7 +36,8 @@ export const PlaceOrder = () => {
       quantity: product.quantity,
       size: product.size,
     }));
-    console.log(productsToOrder);
+
+    await placeOrder(productsToOrder, address);
 
     // Simulate placing order
     /*  await new Promise((resolve) => setTimeout(resolve, 2000)); */
