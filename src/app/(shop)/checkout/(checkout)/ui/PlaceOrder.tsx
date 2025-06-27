@@ -4,14 +4,19 @@ import { placeOrder } from "@/actions";
 import { useAddressStore, useCartStore } from "@/store";
 import { currencyFormat } from "@/utils";
 import clsx from "clsx";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export const PlaceOrder = () => {
   const [loaded, setLoaded] = useState<boolean>(false);
   const [isPlacingOrder, setIsPlacingOrder] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
+
+  const router = useRouter();
 
   const address = useAddressStore((state) => state.address);
   const cart = useCartStore((state) => state.cart);
+  const clearCart = useCartStore((state) => state.clearCart);
 
   const itemsInCart = useCartStore((state) => state.getTotalItems());
   const subTotal = useCartStore((state) =>
@@ -38,12 +43,18 @@ export const PlaceOrder = () => {
     }));
 
     const resp = await placeOrder(productsToOrder, address);
-
-    // Simulate placing order
-    /*  await new Promise((resolve) => setTimeout(resolve, 2000)); */
+    if (!resp?.ok) {
+      setIsPlacingOrder(false);
+      setErrorMessage(resp?.message || "Error al procesar el pedido");
+      return;
+    }
+    //Clear cart after placing order
+    clearCart();
+    setErrorMessage("");
     setIsPlacingOrder(false);
     // Redirect to order confirmation page or handle post-order logic
     // router.push("/orders/123");
+    router.replace("/orders/" + resp.order!.id);
   };
 
   useEffect(() => {
@@ -107,7 +118,7 @@ export const PlaceOrder = () => {
             .
           </span>
         </p>
-        {/* <p className="text-red-500">Error procesando el pedido</p> */}
+        <p className="text-red-500">{errorMessage}</p>
         <button
           /* href={"/orders/123"} */
           onClick={onPlaceOrder}
