@@ -39,26 +39,26 @@ export const placeOrder = async (
     );
 
     // Calculate subtotal, tax, and total
-
     const { subTotal, tax, total } = productIds.reduce(
       (totals, item) => {
         const productQuantity = item.quantity;
         const product = products.find(
           (product) => product.id === item.productId
         );
-
-        if (!product) throw new Error(`${item.productId} no existe - 500`);
+        if (!product) throw new Error(`${item.productId} no encontrado - 500`);
 
         const subTotal = product.price * productQuantity;
 
         totals.subTotal += subTotal;
-        totals.tax += subTotal * 0.15;
-        totals.total += subTotal * 1.15;
+        totals.tax += subTotal * 0.21; // Assuming a 21% tax rate
+        totals.total += subTotal + totals.tax;
 
         return totals;
       },
       { subTotal: 0, tax: 0, total: 0 }
     );
+
+    //Create transaction
   } catch (error) {
     console.error("Error placing order:", error);
     return {
