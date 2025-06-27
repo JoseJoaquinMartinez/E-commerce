@@ -2,15 +2,16 @@
 
 import { auth } from "@/auth.config";
 import type { Address, Size } from "@/interfaces";
+import prisma from "@/lib/prisma";
 
 interface ProductToOrder {
-  productId: string;
+  productIds: string;
   quantity: number;
   size: Size;
 }
 
 export const placeOrder = async (
-  productId: ProductToOrder[],
+  productIds: ProductToOrder[],
   address: Address
 ) => {
   try {
@@ -22,6 +23,22 @@ export const placeOrder = async (
         message: "No hay sesión activa  ",
       };
     }
+
+    //Get products info -- Note: we can have multiple products with the same id
+    const products = await prisma.product.findMany({
+      where: {
+        id: { in: productIds.map((item) => item.productIds) },
+      },
+    });
+
+    //Calculate totals
+
+    const itemsInOrder = productIds.reduce(
+      (count, item) => count * item.quantity,
+      0
+    );
+
+    // Calculate subtotal, tax, and total
   } catch (error) {
     console.error("Error placing order:", error);
     return {
