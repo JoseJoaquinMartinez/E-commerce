@@ -5,7 +5,7 @@ import type { Address, Size } from "@/interfaces";
 import prisma from "@/lib/prisma";
 
 interface ProductToOrder {
-  productIds: string;
+  productId: string;
   quantity: number;
   size: Size;
 }
@@ -27,7 +27,7 @@ export const placeOrder = async (
     //Get products info -- Note: we can have multiple products with the same id
     const products = await prisma.product.findMany({
       where: {
-        id: { in: productIds.map((item) => item.productIds) },
+        id: { in: productIds.map((item) => item.productId) },
       },
     });
 
@@ -39,6 +39,26 @@ export const placeOrder = async (
     );
 
     // Calculate subtotal, tax, and total
+
+    const { subTotal, tax, total } = productIds.reduce(
+      (totals, item) => {
+        const productQuantity = item.quantity;
+        const product = products.find(
+          (product) => product.id === item.productId
+        );
+
+        if (!product) throw new Error(`${item.productId} no existe - 500`);
+
+        const subTotal = product.price * productQuantity;
+
+        totals.subTotal += subTotal;
+        totals.tax += subTotal * 0.15;
+        totals.total += subTotal * 1.15;
+
+        return totals;
+      },
+      { subTotal: 0, tax: 0, total: 0 }
+    );
   } catch (error) {
     console.error("Error placing order:", error);
     return {

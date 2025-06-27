@@ -37,7 +37,7 @@ export const PlaceOrder = () => {
       size: product.size,
     }));
 
-    await placeOrder(productsToOrder, address);
+    const resp = await placeOrder(productsToOrder, address);
 
     // Simulate placing order
     /*  await new Promise((resolve) => setTimeout(resolve, 2000)); */
