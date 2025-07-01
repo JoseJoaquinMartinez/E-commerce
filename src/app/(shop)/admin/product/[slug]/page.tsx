@@ -25,7 +25,7 @@ export default async function AdminProductPage({ params }: Props) {
   return (
     <>
       <Title title={title} />
-      <ProductForm product={product} categories={categories} />
+      <ProductForm product={product ?? {}} categories={categories} />
     </>
   );
 }

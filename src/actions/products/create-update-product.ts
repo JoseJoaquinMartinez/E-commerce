@@ -1,6 +1,7 @@
 "use server";
 
-import { Gender } from "@prisma/client";
+import prisma from "@/lib/prisma";
+import { Gender, Product, Size } from "@prisma/client";
 import { z } from "zod";
 
 const productSchema = z.object({
@@ -24,7 +25,7 @@ const productSchema = z.object({
   gender: z.nativeEnum(Gender),
 });
 
-export const createOrUpdateProduct = async (formData: FormData) => {
+export const createUpdateProduct = async (formData: FormData) => {
   const data = Object.fromEntries(formData);
   const parsedData = productSchema.safeParse(data);
 
@@ -33,5 +34,43 @@ export const createOrUpdateProduct = async (formData: FormData) => {
     return { ok: false, message: "Datos no validos" };
   }
 
-  return { ok: true, message: "Product created/updated successfully" };
+  const product = parsedData.data;
+
+  product.slug = product.slug.toLowerCase().replace(/ /g, "-").trim();
+
+  const { id, ...restProduct } = product;
+  const prismaTx = await prisma.$transaction(async (tx) => {
+    let product: Product;
+
+    const tagsArray = restProduct.tags.split(",").map((tag) => tag.trim());
+    if (id) {
+      product = await tx.product.update({
+        where: { id },
+        data: {
+          ...restProduct,
+          sizes: {
+            set: restProduct.sizes as Size[],
+          },
+          tags: {
+            set: tagsArray,
+          },
+        },
+      });
+    } else {
+      product = await prisma.product.create({
+        data: {
+          ...restProduct,
+          sizes: {
+            set: restProduct.sizes as Size[],
+          },
+          tags: {
+            set: tagsArray,
+          },
+        },
+      });
+    }
+    return { ok: true, product };
+  });
+
+  //todo: revalidate path
 };
