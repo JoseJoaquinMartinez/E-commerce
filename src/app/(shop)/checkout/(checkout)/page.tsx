@@ -1,7 +1,7 @@
 import { Title } from "@/components";
 
 import Link from "next/link";
-import Image from "next/image";
+
 import { ProductsInCart } from "./ui/ProductsinCart";
 import { PlaceOrder } from "./ui/PlaceOrder";
 

@@ -1,6 +1,4 @@
-import { OrderStatus, PayPalButton, Title } from "@/components";
-
-import Image from "next/image";
+import { OrderStatus, PayPalButton, ProductImage, Title } from "@/components";
 
 import { getOrderById } from "@/actions";
 import { redirect } from "next/navigation";
@@ -38,8 +36,8 @@ export default async function OrderPage({ params }: Props) {
             {/* Items */}
             {order!.OrderItem.map((item) => (
               <div key={item.product.slug} className="flex mb-5">
-                <Image
-                  src={`/products/${item.product.ProductImage[0].url}`}
+                <ProductImage
+                  src={item.product.ProductImage[0].url}
                   alt={item.product.title}
                   width={100}
                   height={100}
