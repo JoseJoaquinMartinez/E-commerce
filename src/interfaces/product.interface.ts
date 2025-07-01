@@ -13,7 +13,7 @@ export interface Product {
 }
 
 export interface ProductImage {
-  id: string;
+  id: number;
   url: string;
   productId: string;
 }
