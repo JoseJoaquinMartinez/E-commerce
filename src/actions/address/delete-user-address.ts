@@ -9,6 +9,12 @@ export const deleteUserAddress = async (userId: string) => {
         userId,
       },
     });
+    if (!deleted) {
+      return {
+        ok: false,
+        message: "No se encontró la dirección del usuario",
+      };
+    }
     return {
       ok: true,
       message: "Dirección del usuario eliminada correctamente",

@@ -1,17 +1,14 @@
 import { OrderStatus, PayPalButton, ProductImage, Title } from "@/components";
-
 import { getOrderById } from "@/actions";
 import { redirect } from "next/navigation";
 import { currencyFormat } from "@/utils";
 
-interface Props {
-  params: {
-    id: string;
-  };
-}
-
-export default async function OrderPage({ params }: Props) {
-  const { id } = params;
+export default async function OrderPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
 
   const { ok, order } = await getOrderById(id);
 

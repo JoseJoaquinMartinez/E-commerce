@@ -1,4 +1,4 @@
-"user server";
+"use server";
 
 import { auth } from "@/auth.config";
 import prisma from "@/lib/prisma";
@@ -19,6 +19,12 @@ export const changeUserRole = async (userId: string, role: string) => {
       where: { id: userId },
       data: { role: newRole },
     });
+    if (!user) {
+      return {
+        ok: false,
+        message: "No se encontró el usuario",
+      };
+    }
 
     revalidatePath("/Admin/users");
     return { ok: true };

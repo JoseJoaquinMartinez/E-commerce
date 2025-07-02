@@ -12,6 +12,7 @@ export const getStockBySlug = async (slug: string): Promise<number> => {
 
     return stock?.inStock ?? 0; // Return 0 if stock is undefined
   } catch (error) {
+    console.error("Error fetching stock by slug:", error);
     return 0;
   }
 };
