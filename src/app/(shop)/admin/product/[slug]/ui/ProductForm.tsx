@@ -33,28 +33,30 @@ interface FormInputs {
 }
 
 export const ProductForm = ({ product, categories }: Props) => {
-  const {
-    handleSubmit,
-    register,
-    formState: { isValid },
-    getValues,
-    setValue,
-    watch,
-  } = useForm<FormInputs>({
-    defaultValues: {
-      ...product,
-      tags: product.tags?.join(", "),
-      sizes: product.sizes ?? [],
-      images: undefined,
-    },
-  });
+  const { handleSubmit, register, getValues, setValue, watch } =
+    useForm<FormInputs>({
+      defaultValues: {
+        ...product,
+        tags: product.tags?.join(", "),
+        sizes: product.sizes ?? [],
+        images: undefined,
+      },
+    });
   const router = useRouter();
 
-  watch("sizes");
+  const watchedSizes = watch("sizes");
+  if (!watchedSizes) {
+    return null; // Ensure sizes are watched before rendering
+  }
 
   const onSizeChange = (size: string) => {
     const sizes = new Set(getValues("sizes"));
-    sizes.has(size) ? sizes.delete(size) : sizes.add(size);
+
+    if (sizes.has(size)) {
+      sizes.delete(size);
+    } else {
+      sizes.add(size);
+    }
 
     setValue("sizes", Array.from(sizes));
   };

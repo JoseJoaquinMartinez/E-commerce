@@ -55,6 +55,7 @@ export const getPaginatedProductsWithImages = async ({
       })),
     };
   } catch (error) {
+    console.error("Error fetching paginated products:", error);
     throw new Error("No se pudo cargar los productos");
   }
 };

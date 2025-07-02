@@ -6,22 +6,22 @@ import { Pagination, ProductGrid, Title } from "@/components";
 import { getPaginatedProductsWithImages } from "@/actions";
 import { Gender } from "@prisma/client";
 
-interface Props {
-  params: {
-    gender: string;
-  };
-  searchParams: {
-    page?: string;
-  };
-}
+export default async function GenderPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ gender: string }>;
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const { gender } = await params;
+  const { page } = await searchParams;
 
-export default async function GenderPage({ params, searchParams }: Props) {
-  const { gender } = params;
+  const currentPage = page ? parseInt(page) : 1;
 
-  const page = searchParams.page ? parseInt(searchParams.page) : 1;
-
-  const { products, currentPage, totalPages } =
-    await getPaginatedProductsWithImages({ page, gender: gender as Gender });
+  const { products, totalPages } = await getPaginatedProductsWithImages({
+    page: currentPage,
+    gender: gender as Gender,
+  });
 
   if (!products || products.length === 0) {
     redirect(`/gender/${gender}`);

@@ -6,17 +6,23 @@ import { currencyFormat } from "@/utils";
 
 import Link from "next/link";
 
-interface Props {
+/* interface Props {
   searchParams: {
     page?: string;
   };
-}
+} */
 
-export default async function AdminProductsPage({ searchParams }: Props) {
-  const page = searchParams.page ? parseInt(searchParams.page) : 1;
+export default async function AdminProductsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const { page } = await searchParams;
+  const currentPage = page ? parseInt(page) : 1;
 
-  const { products, currentPage, totalPages } =
-    await getPaginatedProductsWithImages({ page });
+  const { products } = await getPaginatedProductsWithImages({
+    page: currentPage,
+  });
 
   return (
     <>

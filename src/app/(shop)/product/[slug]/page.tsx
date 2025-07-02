@@ -6,20 +6,17 @@ import { notFound } from "next/navigation";
 import { ProductMobileSlideshow } from "../../../../components/product/slideshow/ProductMobileSlideshow";
 import { getProductBySlug } from "@/actions";
 
-import type { Metadata, ResolvingMetadata } from "next";
+import type { Metadata } from "next";
 import { AddToCart } from "./ui/AddToCart";
 
-interface Props {
-  params: {
-    slug: string;
-  };
-}
+type Params = Promise<{ slug: string }>;
 
-export async function generateMetadata(
-  { params }: Props,
-  parent: ResolvingMetadata
-): Promise<Metadata> {
-  const slug = params.slug;
+export async function generateMetadata({
+  params,
+}: {
+  params: Params;
+}): Promise<Metadata> {
+  const { slug } = await params;
 
   // fetch post information
   const product = await getProductBySlug(slug);
@@ -35,8 +32,8 @@ export async function generateMetadata(
   };
 }
 
-export default async function ProductPage({ params }: Props) {
-  const { slug } = params;
+export default async function ProductPage({ params }: { params: Params }) {
+  const { slug } = await params;
 
   const product = await getProductBySlug(slug);
   if (!product) {

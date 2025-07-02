@@ -3,25 +3,21 @@ import { Title } from "@/components";
 import { redirect } from "next/navigation";
 import { ProductForm } from "./ui/ProductForm";
 
-interface Props {
-  params: {
-    slug: string;
-  };
-}
+type Params = Promise<{ slug: string }>;
 
-export default async function AdminProductPage({ params }: Props) {
-  const { slug } = params;
-
+export default async function ProductPage({ params }: { params: Params }) {
+  const { slug } = await params;
   const [product, categories] = await Promise.all([
     getProductBySlug(slug),
     getCategories(),
   ]);
 
-  if (!product) {
+  if (!product && slug !== "new") {
     redirect("/admin/products");
   }
-  const title = slug === "new" ? "Nuevo Product" : "Editar product";
-  //todo: new product
+
+  const title = slug === "new" ? "Nuevo producto" : "Editar producto";
+
   return (
     <>
       <Title title={title} />
