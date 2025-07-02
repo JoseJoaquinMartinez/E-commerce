@@ -1,6 +1,7 @@
 "use server";
 
 import { signIn } from "@/auth.config";
+import { AuthError } from "next-auth";
 
 export async function authenticate(
   prevState: string | undefined,
@@ -15,8 +16,13 @@ export async function authenticate(
     });
     return "success";
   } catch (error) {
-    if ((error as Error).message.includes("CredentialsSignin")) {
-      return "CredentialsSignin";
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case "CredentialsSignin":
+          return "CredentialsSignin";
+        default:
+          return "Something went wrong.";
+      }
     }
     throw error;
   }
