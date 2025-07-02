@@ -1,9 +1,11 @@
 "use server";
-
+import { v2 as cloudinary } from "cloudinary";
 import prisma from "@/lib/prisma";
 import { Gender, Product, Size } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+
+cloudinary.config(process.env.CLOUDINARY_URL ?? "");
 
 const productSchema = z.object({
   id: z.string().uuid().optional().nullable(),
@@ -46,6 +48,7 @@ export const createUpdateProduct = async (formData: FormData) => {
       let product: Product;
 
       const tagsArray = restProduct.tags.split(",").map((tag) => tag.trim());
+
       if (id) {
         product = await tx.product.update({
           where: { id },
@@ -59,6 +62,7 @@ export const createUpdateProduct = async (formData: FormData) => {
             },
           },
         });
+
         return { product };
       } else {
         product = await prisma.product.create({
@@ -73,8 +77,24 @@ export const createUpdateProduct = async (formData: FormData) => {
           },
         });
       }
+
+      // If the product is updated, we need to handle images separately
+      if (formData.getAll("images")) {
+        const images = await uploadImages(formData.getAll("images") as File[]);
+        if (!images) {
+          throw new Error("No se pudieron subir las imágenes");
+        }
+
+        await prisma.productImage.createMany({
+          data: images.map((image) => ({
+            url: image,
+            productId: product.id,
+          })),
+        });
+      }
+      return { product };
     });
-    //todo: revalidate path
+
     revalidatePath("/admin/products");
     revalidatePath(`/admin/product/${product.slug}`);
     revalidatePath(`/products/${product.slug}`);
@@ -82,5 +102,29 @@ export const createUpdateProduct = async (formData: FormData) => {
   } catch (error) {
     console.error("Error creating/updating product:", error);
     return { ok: false, message: "Error al crear/actualizar el producto" };
+  }
+};
+
+const uploadImages = async (images: File[]) => {
+  try {
+    try {
+      const uploadPromises = images.map(async (image) => {
+        const buffer = await image.arrayBuffer();
+        const base64Image = Buffer.from(buffer).toString("base64");
+
+        return cloudinary.uploader
+          .upload(`data:${image.type};base64,${base64Image}`)
+          .then((r) => r.secure_url);
+      });
+
+      const uploadedImages = await Promise.all(uploadPromises);
+      return uploadedImages;
+    } catch (error) {
+      console.error("Error uploading images:", error);
+      return null;
+    }
+  } catch (error) {
+    console.error("Error uploading images:", error);
+    return null;
   }
 };
