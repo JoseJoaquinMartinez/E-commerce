@@ -2,6 +2,7 @@
 
 import prisma from "@/lib/prisma";
 import { Gender, Product, Size } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 const productSchema = z.object({
@@ -39,38 +40,47 @@ export const createUpdateProduct = async (formData: FormData) => {
   product.slug = product.slug.toLowerCase().replace(/ /g, "-").trim();
 
   const { id, ...restProduct } = product;
-  const prismaTx = await prisma.$transaction(async (tx) => {
-    let product: Product;
 
-    const tagsArray = restProduct.tags.split(",").map((tag) => tag.trim());
-    if (id) {
-      product = await tx.product.update({
-        where: { id },
-        data: {
-          ...restProduct,
-          sizes: {
-            set: restProduct.sizes as Size[],
-          },
-          tags: {
-            set: tagsArray,
-          },
-        },
-      });
-    } else {
-      product = await prisma.product.create({
-        data: {
-          ...restProduct,
-          sizes: {
-            set: restProduct.sizes as Size[],
-          },
-          tags: {
-            set: tagsArray,
-          },
-        },
-      });
-    }
-    return { ok: true, product };
-  });
+  try {
+    const prismaTx = await prisma.$transaction(async (tx) => {
+      let product: Product;
 
-  //todo: revalidate path
+      const tagsArray = restProduct.tags.split(",").map((tag) => tag.trim());
+      if (id) {
+        product = await tx.product.update({
+          where: { id },
+          data: {
+            ...restProduct,
+            sizes: {
+              set: restProduct.sizes as Size[],
+            },
+            tags: {
+              set: tagsArray,
+            },
+          },
+        });
+        return { product };
+      } else {
+        product = await prisma.product.create({
+          data: {
+            ...restProduct,
+            sizes: {
+              set: restProduct.sizes as Size[],
+            },
+            tags: {
+              set: tagsArray,
+            },
+          },
+        });
+      }
+    });
+    //todo: revalidate path
+    revalidatePath("/admin/products");
+    revalidatePath(`/admin/product/${product.slug}`);
+    revalidatePath(`/products/${product.slug}`);
+    return { ok: true, product: product };
+  } catch (error) {
+    console.error("Error creating/updating product:", error);
+    return { ok: false, message: "Error al crear/actualizar el producto" };
+  }
 };

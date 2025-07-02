@@ -78,13 +78,13 @@ export const ProductForm = ({ product, categories }: Props) => {
     formData.append("categoryId", productToSave.categoryId);
     formData.append("gender", productToSave.gender);
 
-    /* const { ok, product: updatedProduct } = await createUpdateProduct(formData);
+    const { ok, product: updatedProduct } = await createUpdateProduct(formData);
 
     if (!ok) {
       alert("Producto no se pudo actualizar");
       return;
     }
-    router.replace(`/admin/product/${updatedProduct?.slug}`); */
+    router.replace(`/admin/product/${updatedProduct?.slug}`);
   };
 
   return (
