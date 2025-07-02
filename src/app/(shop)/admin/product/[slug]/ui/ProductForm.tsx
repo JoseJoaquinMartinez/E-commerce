@@ -1,6 +1,6 @@
 "use client";
 
-import { createUpdateProduct } from "@/actions";
+import { createUpdateProduct, deleteProductImage } from "@/actions";
 import { ProductImage } from "@/components";
 import type {
   Category,
@@ -231,9 +231,7 @@ export const ProductForm = ({ product, categories }: Props) => {
                 <button
                   className="btn-danger rounded-b-xl"
                   type="button"
-                  onClick={() =>
-                    console.log("Eliminar imagen", image.id, image.url)
-                  }
+                  onClick={() => deleteProductImage(image.id, image.url)}
                 >
                   Eliminar
                 </button>
