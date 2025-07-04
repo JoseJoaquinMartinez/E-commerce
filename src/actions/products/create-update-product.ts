@@ -78,10 +78,6 @@ export const createUpdateProduct = async (formData: FormData) => {
         });
       }
 
-      if (!prismaTx) {
-        throw new Error("Transaction failed");
-      }
-
       // If the product is updated, we need to handle images separately
       if (formData.getAll("images")) {
         const images = await uploadImages(formData.getAll("images") as File[]);
@@ -98,6 +94,10 @@ export const createUpdateProduct = async (formData: FormData) => {
       }
       return { product };
     });
+
+    if (!prismaTx) {
+      throw new Error("Transaction failed");
+    }
 
     revalidatePath("/admin/products");
     revalidatePath(`/admin/product/${product.slug}`);
