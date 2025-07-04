@@ -16,7 +16,7 @@ export default async function OrdersPage() {
 
   return (
     <>
-      <Title title="Orders" />
+      <Title title="Pedidos" />
 
       <div className="mb-10">
         <table className="min-w-full">
